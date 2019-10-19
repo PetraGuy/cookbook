@@ -2,7 +2,10 @@ from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
-from config import start_page_url, data_stub_url, station_name_list
+import pandas as pd
+
+from config import start_page_url, data_stub_url, station_name_list, api_key
+from credentials import PANDA_AUTH_PARAMS
 
 def simple_get(url):
     """
@@ -44,5 +47,8 @@ def log_error(e):
 response = simple_get(start_page_url)
 html = BeautifulSoup(response, 'html.parser')
 station_name_tags = html.find_all('option')
-station_names = [tag.contents for tag in station_name_tags]
+station_name_urls = [tag['value'] for tag in station_name_tags]
+
+url = station_name_urls[1]
+dfs = pd.read_html(url)
 pass
